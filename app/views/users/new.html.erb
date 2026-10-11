@@ -1,0 +1,37 @@
+<main class="auth">
+  <div class="auth__card">
+    <div class="auth__badge">CREATE ACCOUNT</div>
+    <h1 class="auth__title">kamome</h1>
+    <p class="auth__sub">Register a new account</p>
+
+    <% if flash[:alert] %>
+      <div class="auth__flash auth__flash--alert"><%= flash[:alert] %></div>
+    <% end %>
+
+    <% if @user.errors.any? %>
+      <div class="auth__flash auth__flash--alert">
+        <% @user.errors.full_messages.each do |msg| %>
+          <div><%= msg %></div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <%= form_with model: @user, url: users_path, class: "auth__form" do |form| %>
+      <%= form.label :email_address, "Email", class: "auth__label" %>
+      <%= form.email_field :email_address, required: true, autofocus: true,
+            autocomplete: "username", class: "auth__input" %>
+
+      <%= form.label :password, "Password (12+ chars)", class: "auth__label" %>
+      <%= form.password_field :password, required: true, minlength: 12, maxlength: 72,
+            autocomplete: "new-password", class: "auth__input" %>
+
+      <%= form.label :password_confirmation, "Confirm password", class: "auth__label" %>
+      <%= form.password_field :password_confirmation, required: true, maxlength: 72,
+            autocomplete: "new-password", class: "auth__input" %>
+
+      <%= form.submit "Create account", class: "auth__button" %>
+    <% end %>
+
+    <%= link_to "Back to sign in", new_session_path, class: "auth__link" %>
+  </div>
+</main>

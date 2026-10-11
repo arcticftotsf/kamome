@@ -1,16 +1,29 @@
-<p style="color: green"><%= notice %></p>
+<div class="app">
+  <%= render "shared/header" %>
 
-<% content_for :title, "Todos" %>
+  <main class="app__main">
+    <% if notice %>
+      <div class="flash flash--notice"><%= notice %></div>
+    <% end %>
 
-<h1>Todos</h1>
+    <section class="panel">
+      <h2 class="panel__title">New task</h2>
+      <%= render "form", todo: Todo.new %>
+    </section>
 
-<div id="todos">
-  <% @todos.each do |todo| %>
-    <%= render todo %>
-    <p>
-      <%= link_to "Show this todo", todo %>
-    </p>
-  <% end %>
+    <section class="panel">
+      <h2 class="panel__title">
+        Tasks
+        <span class="count"><%= @todos.count { |t| !t.done } %> open</span>
+      </h2>
+
+      <% if @todos.any? %>
+        <ul class="todos">
+          <%= render @todos %>
+        </ul>
+      <% else %>
+        <p class="empty">No tasks yet.</p>
+      <% end %>
+    </section>
+  </main>
 </div>
-
-<%= link_to "New todo", new_todo_path %>

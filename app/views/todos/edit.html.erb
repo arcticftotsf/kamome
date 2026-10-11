@@ -1,12 +1,11 @@
-<% content_for :title, "Editing todo" %>
+<div class="app">
+  <%= render "shared/header" %>
 
-<h1>Editing todo</h1>
-
-<%= render "form", todo: @todo %>
-
-<br>
-
-<div>
-  <%= link_to "Show this todo", @todo %> |
-  <%= link_to "Back to todos", todos_path %>
+  <main class="app__main">
+    <section class="panel">
+      <%= link_to "← Tasks", todos_path, class: "btn btn--outline btn--sm panel__back" %>
+      <h2 class="panel__title">Edit task</h2>
+      <%= render "form", todo: @todo %>
+    </section>
+  </main>
 </div>

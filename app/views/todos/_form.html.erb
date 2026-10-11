@@ -1,27 +1,20 @@
-<%= form_with(model: todo) do |form| %>
+<%= form_with(model: todo, class: "todo-form") do |form| %>
   <% if todo.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(todo.errors.count, "error") %> prohibited this todo from being saved:</h2>
-
-      <ul>
-        <% todo.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+    <div class="flash flash--alert">
+      <% todo.errors.full_messages.each do |message| %>
+        <div><%= message %></div>
+      <% end %>
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :title, style: "display: block" %>
-    <%= form.text_field :title %>
-  </div>
+  <%= form.text_field :title, required: true, maxlength: 200,
+        placeholder: "What needs to be done?", class: "input" %>
 
-  <div>
-    <%= form.label :done, style: "display: block" %>
-    <%= form.checkbox :done %>
-  </div>
+  <% if todo.persisted? %>
+    <label class="check">
+      <%= form.check_box :done %> Done
+    </label>
+  <% end %>
 
-  <div>
-    <%= form.submit %>
-  </div>
+  <%= form.submit class: "btn btn--primary" %>
 <% end %>
