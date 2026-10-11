@@ -1,7 +1,7 @@
 <header class="app__bar">
-  <div class="app__brand">kamome</div>
+  <%= link_to "kamome", todos_path, class: "app__brand" %>
   <div class="app__user">
     <span class="app__email"><%= Current.user.email_address %></span>
     <%= button_to "Sign out", session_path, method: :delete, class: "btn btn--ghost" %>
   </div>
-</header>   
+</header>

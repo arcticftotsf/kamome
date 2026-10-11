@@ -57,7 +57,7 @@ module Authentication
         cookies.signed[:session_id] = {
           value: session.id,
           httponly: true,
-          same_site: :lax,
+          same_site: :strict,
           secure: Rails.env.production?
         }
       end
