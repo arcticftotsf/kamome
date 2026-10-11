@@ -1,11 +1,30 @@
-<%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
-<%= tag.div(flash[:notice], style: "color:green") if flash[:notice] %>
+<main class="auth">
+  <div class="auth__card">
+    <div class="auth__badge">SECURE ACCESS</div>
+    <h1 class="auth__title">kamome</h1>
+    <p class="auth__sub">Authenticate to continue</p>
 
-<%= form_with url: session_path do |form| %>
-  <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address] %><br>
-  <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72 %><br>
-  <%= form.submit "Sign in" %>
-<% end %>
-<br>
+    <% if flash[:alert] %>
+      <div class="auth__flash auth__flash--alert"><%= flash[:alert] %></div>
+    <% end %>
+    <% if flash[:notice] %>
+      <div class="auth__flash auth__flash--notice"><%= flash[:notice] %></div>
+    <% end %>
 
-<%= link_to "Forgot password?", new_password_path %>
+    <%= form_with url: session_path, class: "auth__form" do |form| %>
+      <%= form.label :email_address, "Email", class: "auth__label" %>
+      <%= form.email_field :email_address, required: true, autofocus: true,
+            autocomplete: "username", placeholder: "you@example.com",
+            value: params[:email_address], class: "auth__input" %>
+
+      <%= form.label :password, "Password", class: "auth__label" %>
+      <%= form.password_field :password, required: true,
+            autocomplete: "current-password", placeholder: "••••••••••••",
+            maxlength: 72, class: "auth__input" %>
+
+      <%= form.submit "Sign in", class: "auth__button" %>
+    <% end %>
+
+    <%= link_to "Forgot password?", new_password_path, class: "auth__link" %>
+  </div>
+</main>
