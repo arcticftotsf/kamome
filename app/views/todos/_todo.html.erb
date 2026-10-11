@@ -1,12 +1,17 @@
-<div id="<%= dom_id todo %>">
-  <div>
-    <strong>Title:</strong>
-    <%= todo.title %>
-  </div>
+<li id="<%= dom_id(todo) %>" class="todo <%= 'todo--done' if todo.done %>">
+  <%= button_to todo_path(todo), method: :patch,
+        params: { todo: { done: !todo.done } },
+        class: "todo__check", form_class: "todo__form",
+        "aria-label": "Toggle done" do %>
+    <%= todo.done ? "✓" : "" %>
+  <% end %>
 
-  <div>
-    <strong>Done:</strong>
-    <%= todo.done %>
-  </div>
+  <span class="todo__title"><%= todo.title %></span>
 
-</div>
+  <div class="todo__actions">
+    <%= link_to "Edit", edit_todo_path(todo), class: "btn btn--ghost btn--sm" %>
+    <%= button_to "Delete", todo_path(todo), method: :delete,
+          class: "btn btn--danger btn--sm", form_class: "todo__form",
+          form: { data: { turbo_confirm: "Delete this task?" } } %>
+  </div>
+</li>
