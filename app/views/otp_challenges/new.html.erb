@@ -2,7 +2,7 @@
   <div class="auth__card">
     <div class="auth__badge">TWO-FACTOR</div>
     <h1 class="auth__title">kamome</h1>
-    <p class="auth__sub">Enter the 6-digit code from your authenticator app</p>
+    <p class="auth__sub">Enter the 6-digit code, or a backup code</p>
 
     <% if flash[:alert] %>
       <div class="auth__flash auth__flash--alert"><%= flash[:alert] %></div>
@@ -11,10 +11,8 @@
     <%= form_with url: otp_challenge_path, class: "auth__form" do |form| %>
       <%= form.label :code, "Code", class: "auth__label" %>
       <%= form.text_field :code, required: true, autofocus: true,
-            inputmode: "numeric", pattern: "[0-9]{6}", maxlength: 6,
-            autocomplete: "one-time-code", placeholder: "123456",
-            class: "auth__input" %>
-
+        maxlength: 12, autocomplete: "one-time-code",
+        placeholder: "123456 or backup code", class: "auth__input" %>
       <%= form.submit "Verify", class: "auth__button" %>
     <% end %>
 

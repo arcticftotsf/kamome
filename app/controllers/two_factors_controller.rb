@@ -17,7 +17,8 @@ class TwoFactorsController < ApplicationController
     user = Current.user
     if user.verify_otp(params[:code])
       user.update!(otp_enabled: true)
-      redirect_to todos_path, notice: "Two-factor authentication enabled."
+      flash[:backup_codes] = user.regenerate_backup_codes!
+      redirect_to backup_codes_path
     else
       redirect_to two_factor_path, alert: "Invalid code."
     end
@@ -27,6 +28,7 @@ class TwoFactorsController < ApplicationController
     user = Current.user
     if user.authenticate(params[:password].to_s)
       user.update!(otp_enabled: false, otp_secret: nil, otp_last_used_at: nil)
+      user.backup_codes.delete_all
       redirect_to two_factor_path, notice: "Two-factor authentication disabled."
     else
       redirect_to two_factor_path, alert: "Wrong password."

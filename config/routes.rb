@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :users, only: %i[new create]
   resource :two_factor, only: %i[show create destroy]
   resource :otp_challenge, only: %i[new create]
+  resource :backup_codes, only: %i[show create]
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
