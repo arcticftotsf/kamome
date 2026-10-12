@@ -2,6 +2,7 @@ class User < ApplicationRecord
   has_secure_password
   has_many :sessions, dependent: :destroy
   has_many :todos, dependent: :destroy
+  has_many :backup_codes, dependent: :destroy
   encrypts :otp_secret
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
@@ -21,5 +22,23 @@ class User < ApplicationRecord
     User.where(id: id)
         .where("otp_last_used_at IS NULL OR otp_last_used_at < ?", timestamp)
         .update_all(otp_last_used_at: timestamp) == 1
+  end
+
+  def regenerate_backup_codes!
+    codes = Array.new(10) { SecureRandom.alphanumeric(10).downcase }
+    transaction do
+      backup_codes.delete_all
+      codes.each { |c| backup_codes.create!(code_digest: BackupCode.digest(c)) }
+    end
+    codes
+  end
+
+  def use_backup_code(input)
+    BackupCode.where(user_id: id, code_digest: BackupCode.digest(input), used_at: nil)
+              .update_all(used_at: Time.current) == 1
+  end
+
+  def backup_codes_remaining
+    backup_codes.where(used_at: nil).count
   end
 end

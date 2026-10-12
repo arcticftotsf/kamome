@@ -8,10 +8,23 @@ class OtpChallengesController < ApplicationController
   end
 
   def create
-    if @user.verify_otp(params[:code])
+    code = params[:code].to_s.strip
+    ok = if code.match?(/\A\d{6}\z/)
+          @user.verify_otp(code)
+    else
+          @user.use_backup_code(code)
+    end
+
+    if ok
+      used_backup = !code.match?(/\A\d{6}\z/)
       clear_pending
       start_new_session_for @user
-      redirect_to after_authentication_url
+      if used_backup
+        redirect_to after_authentication_url,
+                    notice: "Backup code used. #{@user.backup_codes_remaining} remaining."
+      else
+        redirect_to after_authentication_url
+      end
     else
       redirect_to new_otp_challenge_path, alert: "Invalid code."
     end

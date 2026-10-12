@@ -1,0 +1,26 @@
+<div class="app">
+  <%= render "shared/header" %>
+
+  <main class="app__main">
+    <section class="panel">
+      <h2 class="panel__title">Backup codes</h2>
+
+    <div class="flash flash--alert">
+        These codes are shown only once. Save them in a password manager now.
+    </div>
+
+    <p class="hint">
+        If you lose your phone, enter one of these codes instead of the 6-digit
+        code when you sign in. Each code works only once.
+    </p>
+
+      <ul class="codes">
+        <% @codes.each do |code| %>
+          <li><code><%= code.scan(/.{1,5}/).join("-") %></code></li>
+        <% end %>
+      </ul>
+
+      <%= link_to "I saved them", todos_path, class: "btn btn--primary" %>
+    </section>
+  </main>
+</div>

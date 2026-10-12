@@ -12,6 +12,18 @@
       <% if Current.user.otp_enabled? %>
         <p class="hint">Status: <strong>Enabled</strong></p>
 
+        <p class="hint">
+            Backup codes remaining: <strong><%= Current.user.backup_codes_remaining %></strong><br>
+            Use one when you can't access your authenticator app. Regenerating makes all old codes invalid.
+        </p>
+
+        <%= form_with url: backup_codes_path, class: "todo-form" do |form| %>
+          <%= form.password_field :password, required: true, maxlength: 72,
+                autocomplete: "current-password", placeholder: "Password to regenerate",
+                class: "input" %>
+          <%= form.submit "Regenerate backup codes", class: "btn btn--outline" %>
+        <% end %>
+
         <%= form_with url: two_factor_path, method: :delete, class: "todo-form" do |form| %>
           <%= form.password_field :password, required: true, maxlength: 72,
                 autocomplete: "current-password", placeholder: "Password to disable",
