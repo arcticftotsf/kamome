@@ -5,14 +5,21 @@ class SessionsController < ApplicationController
   def new
   end
 
-  def create
-    if user = User.authenticate_by(params.permit(:email_address, :password))
+def create
+  if user = User.authenticate_by(params.permit(:email_address, :password))
+    if user.otp_enabled?
+      # コード確認が終わるまで、ログイン済みにはしない
+      session[:pending_user_id] = user.id
+      session[:pending_at] = Time.current.to_i
+      redirect_to new_otp_challenge_path
+    else
       start_new_session_for user
       redirect_to after_authentication_url
-    else
-      redirect_to new_session_path, alert: "Try another email address or password."
     end
+  else
+    redirect_to new_session_path, alert: "Try another email address or password."
   end
+end
 
   def destroy
     terminate_session
