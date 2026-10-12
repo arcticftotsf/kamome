@@ -1,7 +1,16 @@
 <header class="app__bar">
   <%= link_to "kamome", todos_path, class: "app__brand" %>
-  <div class="app__user">
-    <span class="app__email"><%= Current.user.email_address %></span>
-    <%= button_to "Sign out", session_path, method: :delete, class: "btn btn--ghost" %>
-  </div>
+
+  <details class="menu">
+    <summary class="menu__button">
+      <span class="menu__email"><%= Current.user.email_address %></span>
+      <span class="menu__icon" aria-hidden="true">☰</span>
+    </summary>
+
+    <div class="menu__panel">
+      <%= link_to "Two-factor auth", two_factor_path, class: "menu__item" %>
+      <%= button_to "Sign out", session_path, method: :delete,
+            class: "menu__item", form_class: "menu__form" %>
+    </div>
+  </details>
 </header>

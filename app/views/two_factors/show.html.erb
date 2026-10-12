@@ -1,0 +1,38 @@
+<div class="app">
+  <%= render "shared/header" %>
+
+  <main class="app__main">
+    <section class="panel">
+      <%= link_to "← Tasks", todos_path, class: "btn btn--outline btn--sm panel__back" %>
+      <h2 class="panel__title">Two-factor authentication</h2>
+
+      <% if alert %><div class="flash flash--alert"><%= alert %></div><% end %>
+      <% if notice %><div class="flash flash--notice"><%= notice %></div><% end %>
+
+      <% if Current.user.otp_enabled? %>
+        <p class="hint">Status: <strong>Enabled</strong></p>
+
+        <%= form_with url: two_factor_path, method: :delete, class: "todo-form" do |form| %>
+          <%= form.password_field :password, required: true, maxlength: 72,
+                autocomplete: "current-password", placeholder: "Password to disable",
+                class: "input" %>
+          <%= form.submit "Disable", class: "btn btn--danger" %>
+        <% end %>
+      <% else %>
+        <p class="hint">1. Scan this QR code with your authenticator app.</p>
+        <div class="qr"><%= raw @qr_svg %></div>
+
+        <p class="hint">Can't scan? Enter this key manually:</p>
+        <code class="secret"><%= Current.user.otp_secret %></code>
+
+        <p class="hint">2. Enter the 6-digit code shown in the app.</p>
+        <%= form_with url: two_factor_path, class: "todo-form" do |form| %>
+          <%= form.text_field :code, required: true, inputmode: "numeric",
+                pattern: "[0-9]{6}", maxlength: 6, autocomplete: "one-time-code",
+                placeholder: "123456", class: "input" %>
+          <%= form.submit "Enable", class: "btn btn--primary" %>
+        <% end %>
+      <% end %>
+    </section>
+  </main>
+</div>
