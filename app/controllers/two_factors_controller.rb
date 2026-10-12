@@ -15,7 +15,7 @@ class TwoFactorsController < ApplicationController
 
   def create
     user = Current.user
-    if user.otp_secret.present? && totp(user).verify(params[:code].to_s.strip, drift_behind: 15)
+    if user.verify_otp(params[:code])
       user.update!(otp_enabled: true)
       redirect_to todos_path, notice: "Two-factor authentication enabled."
     else
@@ -26,7 +26,7 @@ class TwoFactorsController < ApplicationController
   def destroy
     user = Current.user
     if user.authenticate(params[:password].to_s)
-      user.update!(otp_enabled: false, otp_secret: nil)
+      user.update!(otp_enabled: false, otp_secret: nil, otp_last_used_at: nil)
       redirect_to two_factor_path, notice: "Two-factor authentication disabled."
     else
       redirect_to two_factor_path, alert: "Wrong password."
