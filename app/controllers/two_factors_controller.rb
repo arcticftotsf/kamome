@@ -9,8 +9,10 @@ class TwoFactorsController < ApplicationController
     # 未有効の間だけ秘密鍵を用意する(再読み込みしても同じQRが出る)
     user.update!(otp_secret: ROTP::Base32.random) if user.otp_secret.blank?
     uri = totp(user).provisioning_uri(user.email_address)
-    @qr_svg = RQRCode::QRCode.new(uri).as_svg(module_size: 4, standalone: true,
-                                              use_path: true, viewbox: true)
+    svg = RQRCode::QRCode.new(uri).as_svg(module_size: 4, standalone: true,
+                                          use_path: true, viewbox: true)
+    @qr_data_uri = "data:image/svg+xml;base64,#{[ svg ].pack('m0')}"
+    response.set_header("Cache-Control", "no-store")
   end
 
   def create

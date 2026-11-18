@@ -32,7 +32,8 @@
         <% end %>
       <% else %>
         <p class="hint">1. Scan this QR code with your authenticator app.</p>
-        <div class="qr"><%= raw @qr_svg %></div>
+        <%# <div class="qr"><%= raw @qr_svg %></div> %>
+        <div class="qr"><%= image_tag @qr_data_uri, alt: "QR code for authenticator app" %></div>
 
         <p class="hint">Can't scan? Enter this key manually:</p>
         <code class="secret"><%= Current.user.otp_secret %></code>
