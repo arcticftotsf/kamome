@@ -55,4 +55,6 @@ Rails.application.configure do
   config.active_record.encryption.deterministic_key = "test-deterministic-key-not-secret"
   config.active_record.encryption.key_derivation_salt = "test-key-derivation-salt-not-secret"
   config.active_record.encryption.encrypt_fixtures = true
+
+  config.active_record.verify_foreign_keys_for_fixtures = false
 end
