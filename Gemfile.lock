@@ -279,7 +279,7 @@ GEM
     regexp_parser (2.13.1)
     reline (0.7.0)
       io-console (~> 0.5)
-    rotp (6.3.0)
+    rotp (6.4.0)
     rqrcode (3.2.0)
       chunky_png (~> 1.0)
       rqrcode_core (~> 2.0)
@@ -402,7 +402,7 @@ DEPENDENCIES
   propshaft
   puma (>= 5.0)
   rails (~> 8.1.4)
-  rotp (~> 6.3)
+  rotp (~> 6.4)
   rqrcode (~> 3.2)
   rubocop-rails-omakase
   selenium-webdriver
