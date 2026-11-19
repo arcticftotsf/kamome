@@ -9,6 +9,7 @@
 
     <div class="menu__panel">
       <%= link_to "Two-factor auth", two_factor_path, class: "menu__item" %>
+      <%= link_to "Active sessions", active_sessions_path, class: "menu__item" %>
       <%= button_to "Sign out", session_path, method: :delete,
             class: "menu__item", form_class: "menu__form" %>
     </div>

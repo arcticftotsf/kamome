@@ -1,0 +1,42 @@
+<div class="app">
+  <%= render "shared/header" %>
+
+  <main class="app__main">
+    <section class="panel">
+      <%= link_to "← Tasks", todos_path, class: "btn btn--outline btn--sm panel__back" %>
+      <h2 class="panel__title">Active sessions</h2>
+
+      <% if alert %><div class="flash flash--alert"><%= alert %></div><% end %>
+      <% if notice %><div class="flash flash--notice"><%= notice %></div><% end %>
+
+      <p class="hint">Devices currently signed in to your account. End any you don't recognize.</p>
+
+      <ul class="sessions">
+        <% @sessions.each do |s| %>
+          <li class="session">
+            <div class="session__info">
+              <div class="session__agent">
+                <%= truncate(s.user_agent.to_s, length: 70) %>
+                <% if s == Current.session %><span class="count">This device</span><% end %>
+              </div>
+              <div class="session__meta">
+                IP <%= s.ip_address %> ・ Signed in <%= l(s.created_at, format: :short) %>
+                ・ Last active <%= time_ago_in_words(s.updated_at) %> ago
+              </div>
+            </div>
+
+            <% unless s == Current.session %>
+              <%= button_to "End", active_session_path(s), method: :delete,
+                    class: "btn btn--danger btn--sm", form_class: "todo__form",
+                    form: { data: { turbo_confirm: "End this session?" } } %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+
+      <%= button_to "End all other sessions", others_active_sessions_path, method: :delete,
+            class: "btn btn--danger", form_class: "todo__form",
+            form: { data: { turbo_confirm: "End all other sessions?" } } %>
+    </section>
+  </main>
+</div>

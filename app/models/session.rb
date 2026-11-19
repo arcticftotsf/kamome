@@ -8,6 +8,10 @@ class Session < ApplicationRecord
     where("updated_at < ? OR created_at < ?", IDLE_TIMEOUT.ago, ABSOLUTE_TIMEOUT.ago)
   }
 
+  scope :active, -> {
+    where("updated_at >= ? AND created_at >= ?", IDLE_TIMEOUT.ago, ABSOLUTE_TIMEOUT.ago)
+  }
+
   def expired?
     updated_at < IDLE_TIMEOUT.ago || created_at < ABSOLUTE_TIMEOUT.ago
   end

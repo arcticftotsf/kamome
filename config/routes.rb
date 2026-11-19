@@ -19,4 +19,8 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
   root "todos#index"
+
+  resources :active_sessions, only: %i[index destroy] do
+    collection { delete :others }
+  end
 end
