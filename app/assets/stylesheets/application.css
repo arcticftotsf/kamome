@@ -197,3 +197,18 @@ a.app__brand:hover {
 
 .todo-form + .todo-form { margin-top: 12px; }
 .todo-form .input { width: auto; }
+
+.sessions { margin: 0 0 20px; padding: 0; list-style: none; }
+
+.session {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 4px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+.session:last-child { border-bottom: 0; }
+.session__info { min-width: 0; flex: 1; }
+.session__agent { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; word-break: break-word; }
+.session__meta { margin-top: 4px; font-size: 12px; color: #64748b; }
