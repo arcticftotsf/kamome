@@ -1,0 +1,25 @@
+<div class="app">
+  <%= render "shared/header" %>
+
+  <main class="app__main">
+    <section class="panel">
+      <%= link_to "← Tasks", todos_path, class: "btn btn--outline btn--sm panel__back" %>
+      <h2 class="panel__title">Audit log</h2>
+      <p class="hint">Latest 100 security events for your account. Read-only.</p>
+
+      <ul class="sessions">
+        <% @logs.each do |log| %>
+          <li class="session">
+            <div class="session__info">
+              <div class="session__agent"><%= log.event %></div>
+              <div class="session__meta">
+                <%= l(log.created_at, format: :short) %> ・ IP <%= log.ip_address %>
+                ・ <%= truncate(log.user_agent.to_s, length: 60) %>
+              </div>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+  </main>
+</div>

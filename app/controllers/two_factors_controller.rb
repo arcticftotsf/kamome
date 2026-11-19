@@ -21,6 +21,8 @@ class TwoFactorsController < ApplicationController
       user.update!(otp_enabled: true)
       flash[:backup_codes] = user.regenerate_backup_codes!
       redirect_to backup_codes_path
+
+      AuditLog.record("イベント名", user: Current.user, request: request)
     else
       redirect_to two_factor_path, alert: "Invalid code."
     end
@@ -32,6 +34,8 @@ class TwoFactorsController < ApplicationController
       user.update!(otp_enabled: false, otp_secret: nil, otp_last_used_at: nil)
       user.backup_codes.delete_all
       redirect_to two_factor_path, notice: "Two-factor authentication disabled."
+
+      AuditLog.record("イベント名", user: Current.user, request: request)
     else
       redirect_to two_factor_path, alert: "Wrong password."
     end

@@ -15,6 +15,8 @@ class BackupCodesController < ApplicationController
     if Current.user.authenticate(params[:password].to_s)
       flash[:backup_codes] = Current.user.regenerate_backup_codes!
       redirect_to backup_codes_path
+
+      AuditLog.record("イベント名", user: Current.user, request: request)
     else
       redirect_to two_factor_path, alert: "Wrong password."
     end

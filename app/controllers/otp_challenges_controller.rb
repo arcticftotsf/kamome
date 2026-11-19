@@ -9,24 +9,31 @@ class OtpChallengesController < ApplicationController
 
   def create
     code = params[:code].to_s.strip
-    ok = if code.match?(/\A\d{6}\z/)
-          @user.verify_otp(code)
-    else
-          @user.use_backup_code(code)
-    end
+    numeric = code.match?(/\A\d{6}\z/)
+    ok = numeric ? @user.verify_otp(code) : @user.use_backup_code(code)
 
     if ok
-      used_backup = !code.match?(/\A\d{6}\z/)
       clear_pending
+      @user.reset_failed_logins!
       start_new_session_for @user
-      if used_backup
+      AuditLog.record(numeric ? "login_success_2fa" : "login_success_backup_code",
+                      user: @user, request: request)
+      if numeric
+        redirect_to after_authentication_url
+      else
         redirect_to after_authentication_url,
                     notice: "Backup code used. #{@user.backup_codes_remaining} remaining."
-      else
-        redirect_to after_authentication_url
       end
     else
-      redirect_to new_otp_challenge_path, alert: "Invalid code."
+      result = @user.register_failed_login!
+      AuditLog.record("otp_failed", user: @user, request: request)
+      if result == :locked
+        AuditLog.record("account_locked", user: @user, request: request)
+        clear_pending
+        redirect_to new_session_path, alert: "Try another email address or password."
+      else
+        redirect_to new_otp_challenge_path, alert: "Invalid code."
+      end
     end
   end
 
@@ -42,7 +49,7 @@ class OtpChallengesController < ApplicationController
       end
 
       @user = User.find_by(id: id)
-      unless @user&.otp_enabled?
+      unless @user&.otp_enabled? && !@user.locked?
         clear_pending
         redirect_to new_session_path
       end

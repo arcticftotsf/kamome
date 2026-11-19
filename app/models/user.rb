@@ -41,4 +41,47 @@ class User < ApplicationRecord
   def backup_codes_remaining
     backup_codes.where(used_at: nil).count
   end
+
+
+  MAX_FAILED_LOGINS = 5
+  FAILURE_WINDOW = 1.hour
+
+  def locked?
+    locked_at.present?
+  end
+
+  # このミスでロックされたら :locked を返す
+  def register_failed_login!
+    return :already_locked if locked?
+
+    # 最後のミスから1時間以上空いていたら、数え直す
+    if last_failed_login_at.nil? || last_failed_login_at < FAILURE_WINDOW.ago
+      update_columns(failed_login_count: 0)
+    end
+
+    User.where(id: id).update_all(
+      [ "failed_login_count = failed_login_count + 1, last_failed_login_at = ?", Time.current ]
+    )
+    reload
+
+    if failed_login_count >= MAX_FAILED_LOGINS
+      lock!
+      :locked
+    else
+      :counted
+    end
+  end
+
+  def lock!
+    update_columns(locked_at: Time.current)
+    sessions.destroy_all   # ロックしたら、ログイン中の端末もすべて切る
+  end
+
+  def unlock!
+    update_columns(locked_at: nil, failed_login_count: 0, last_failed_login_at: nil)
+  end
+
+  def reset_failed_logins!
+    update_columns(failed_login_count: 0) if failed_login_count.positive?
+  end
 end
